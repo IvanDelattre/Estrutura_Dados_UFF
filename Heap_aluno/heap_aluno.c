@@ -27,11 +27,12 @@ void insere_heap(Heap *h, char *nome , char *cpf , double nota  ) ;
 void imprimir_heap(Heap *h) ; 
 void descer(Heap *h, int i) ; 
 Aluno* remover_max(Heap *h) ; 
+void carregar_alunos_da_base(Heap *h, const char *arquivo_base) ;
 
 int main(){
     Heap *h = (Heap *)malloc(sizeof(Heap));
-    inicializa_heap(h, "outro.bin");
-
+    inicializa_heap(h, "heap.dat");
+	carregar_alunos_da_base(h, "alunos.dat");
     
     Aluno *a = (Aluno *)malloc(sizeof(Aluno));
  
@@ -107,21 +108,30 @@ Aluno *cria_aluno(char *nome , char *cpf , double nota){
 }
 
 void inicializa_heap(Heap *h, char *nome_arquivo) {
-	FILE *arq = fopen(nome_arquivo, "w+b");
-	h->arq = arq;
-	
-	h->qant_registros = 1;
-	strcpy(h->nome_arquivo, nome_arquivo);
-	
-	
-	int num = -1 ;
-	
-	Aluno *inicio = cria_aluno("-", "-" , -1) ; 
-	
-	fwrite(inicio , sizeof(Aluno) , 1 , h->arq ) ; 
-	rewind(h->arq);
-}
+    FILE *arq = fopen(nome_arquivo, "r+b");  
 
+    if (arq == NULL) {
+        
+        arq = fopen(nome_arquivo, "w+b");
+        if (!arq) {
+            printf("Erro ao abrir/criar o arquivo.\n");
+            exit(1);
+        }
+
+        
+        Aluno *inicio = cria_aluno("-", "-", -1);
+        fwrite(inicio, sizeof(Aluno), 1, arq);
+        free(inicio);
+    }
+
+    h->arq = arq;
+    strcpy(h->nome_arquivo, nome_arquivo);
+
+    
+    fseek(arq, 0, SEEK_END);
+    h->qant_registros = ftell(arq) / sizeof(Aluno);
+    rewind(arq);
+}
 
 
 
@@ -249,12 +259,29 @@ void imprimir_heap(Heap *h) {
         if(i == 0 ) continue ; 
 		fseek(h->arq, i * sizeof(Aluno), SEEK_SET);
 		fread(a, sizeof(Aluno), 1, h->arq) ; 
-		printf("Aluno : %s / cpf : %s / nota : %.2lf \n", a->nome , a->cpf , a->nota );
+		printf("Aluno %d : %s / cpf : %s / nota : %.2lf \n", i ,a->nome , a->cpf , a->nota );
     }
 	printf("\n") ; 
 	free(a) ; 
 }
 
+void carregar_alunos_da_base(Heap *h, const char *arquivo_base) {
+    if (h->qant_registros > 1) return; // já populado
+
+    FILE *base = fopen(arquivo_base, "rb");
+    if (!base) {
+        printf("Arquivo base de alunos não encontrado.\n");
+        return;
+    }
+
+    Aluno aluno;
+    while (fread(&aluno, sizeof(Aluno), 1, base) == 1) {
+        insere_heap(h, aluno.nome, aluno.cpf, aluno.nota);
+    }
+
+    fclose(base);
+    printf("Heap populada com os alunos da base.\n");
+}
 
 
 
@@ -269,7 +296,5 @@ return (i*2);
 int dir(int i){
 return (i*2+1);
 }
-
-
 
 
