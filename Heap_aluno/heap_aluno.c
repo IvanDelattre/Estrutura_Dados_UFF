@@ -39,7 +39,14 @@ int main(){
 	int condition = 1 ;
 	while(condition){
 		
-		printf("Digitar operacao: 1 - inserir , 2 - imprimir , 3 - Retirar Maior Prioridade, sair - 0 : ") ; 
+		printf("\n===== MENU =====\n");
+		printf("1 - Inserir\n");
+		printf("2 - Imprimir\n");
+		printf("3 - Retirar Maior Prioridade\n");
+		printf("4 - Consultar Maior Prioridade\n");
+		printf("0 - Sair\n");
+		printf("================\n");
+		printf("Opcao: ");
 		scanf("%d" , &condition) ; 
 		
 		switch (condition) {
@@ -76,6 +83,11 @@ int main(){
 		        break;
 		    }
 		    
+		    case 4 : {
+			
+				Aluno *a = ler_arquivo(h , 1) ; 
+				printf("\nPropriedades do aluno prioritario : %s / %s / %.2lf\n\n", a->nome, a->cpf, a->nota);
+			}
 		    
 		
 		    case 0:
@@ -191,20 +203,20 @@ void insere_heap(Heap *h, char *nome , char *cpf , double nota  ) {
 
 Aluno* remover_max(Heap *h) {
     if (h->qant_registros <= 1) {
-        return NULL; // heap vazia (posição 0 é dummy)
+        return NULL; 
     }
 
-    Aluno *max = ler_arquivo(h, 1); // raiz
+    Aluno *max = ler_arquivo(h, 1); 
     Aluno *ultimo = ler_arquivo(h, h->qant_registros - 1);
 
-    // Substitui a raiz pelo último elemento
+    
     escrever_arquivo(h, 1, ultimo);
 
-    h->qant_registros--; // reduz o tamanho da heap
+    h->qant_registros--; 
 
-    descer(h, 1); // reorganiza a heap
+    descer(h, 1); 
 
-    free(ultimo); // liberamos o que foi copiado
+    free(ultimo); 
     return max;
 }
 
