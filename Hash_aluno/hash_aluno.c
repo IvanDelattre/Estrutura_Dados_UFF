@@ -27,28 +27,11 @@ Aluno *ler_arquivo(Hash *h, int pos  ) ;
 void escrever_arquivo(Hash *h , int pos , Aluno *a ) ; 
 void povoar_tabela(Hash *h, char *arquivo) ;
 int remover_hash(Hash *h, char *cpf) ; 
- 
+void inicializa_hash(Hash *h, char *arquivo  ) ; 
 
 int main(){
-	
-	FILE *arq = fopen("hash.dat", "w+b");
-	int i;
-    for ( i = 0; i < TAMANHO_TABELA ; i++) {
-		Aluno aluno;
-		strcpy(aluno.nome, " ");
-		strcpy(aluno.cpf, " ");
-		aluno.nota = 0.0;
-		aluno.ocupado = 0;
-		fwrite(&aluno, sizeof(Aluno), 1, arq);
-	}
-	
-	
 	Hash *h = (Hash*) malloc(sizeof(Hash)) ; 
-	h->arq = arq; 
-	povoar_tabela(h , "alunos.dat") ;
-	
-	
-	imprimir_hash(h) ; 
+	inicializa_hash(h , "hash.dat") ; 
 	
 	
 	int condition = 1 ; 
@@ -291,6 +274,41 @@ void povoar_tabela(Hash *h, char *arquivo){
 		
 	}
 	
+	
+}
+
+
+
+void inicializa_hash(Hash *h, char *arquivo  ) {
+	
+	FILE *arq = fopen(arquivo, "r+b");  
+	
+	if (arq == NULL) {
+        
+        arq = fopen(arquivo, "w+b");
+        h->arq = arq ; 
+        int i ; 
+		for ( i = 0; i < TAMANHO_TABELA ; i++) {
+			Aluno aluno;
+			strcpy(aluno.nome, " ");
+			strcpy(aluno.cpf, " ");
+			aluno.nota = 0.0;
+			aluno.ocupado = 0;
+			fwrite(&aluno, sizeof(Aluno), 1, arq);
+		}
+		povoar_tabela(h , "alunos.dat") ;
+		strcpy(h->nome_arquivo, arquivo);
+    	fseek(arq, 0, SEEK_END);
+    	h->qant_registros = ftell(arq) / sizeof(Aluno);
+    	rewind(arq);
+    	return ; 
+    }
+
+	h->arq = arq ; 
+	strcpy(h->nome_arquivo, arquivo);
+    fseek(arq, 0, SEEK_END);
+    h->qant_registros = ftell(arq) / sizeof(Aluno);
+    rewind(arq);	
 	
 }
 
