@@ -12,7 +12,7 @@ typedef struct heap {
 typedef struct aluno{
 	char nome[50];
 	double nota;
-	char cpf[11];
+	char cpf[12];
 }Aluno;
 
 Aluno *cria_aluno(char *nome , char *cpf , double nota) ; 
@@ -39,13 +39,13 @@ int main(){
 	int condition = 1 ;
 	while(condition){
 		
-		printf("\n===== MENU =====\n");
+		printf("\n===== MENU HEAP =====\n");
 		printf("1 - Inserir\n");
 		printf("2 - Imprimir\n");
 		printf("3 - Retirar Maior Prioridade\n");
 		printf("4 - Consultar Maior Prioridade\n");
 		printf("0 - Sair\n");
-		printf("================\n");
+		printf("======================\n");
 		printf("Opcao: ");
 		scanf("%d" , &condition) ; 
 		
@@ -53,7 +53,7 @@ int main(){
 		
 		    case 1: {
 		        char nome[50];
-		        char cpf[11];
+		        char cpf[12];
 		        double nota;
 		
 		        printf("Digite nome (sem espaco) : ");

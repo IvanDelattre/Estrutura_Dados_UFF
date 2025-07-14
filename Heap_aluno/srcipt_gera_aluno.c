@@ -5,7 +5,7 @@
 typedef struct aluno{
 	char nome[50];
 	double nota;
-	char cpf[11];
+	char cpf[12];
 }Aluno;
 
 void gerar_alunos( const char *arquivo_saida) ; 
@@ -46,10 +46,10 @@ void gerar_alunos(const char *arquivo_saida) {
 							for (c = 0; c < 11; c++) {
                                 cpf[c] = '0' + (rand() % 10);
                             }
-                            cpf[11] = '\0';
+                            cpf[12] = '\0';
 
                             double nota = ((double)(rand() % 10000)) / 1000.0;
-
+							
                             // Cria e escreve no arquivo de saída
                             Aluno aluno;
                             strcpy(aluno.nome, nome);
