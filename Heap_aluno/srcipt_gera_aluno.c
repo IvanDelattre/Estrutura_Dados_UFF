@@ -50,7 +50,7 @@ void gerar_alunos(const char *arquivo_saida) {
 
                             double nota = ((double)(rand() % 10000)) / 1000.0;
 							
-                            // Cria e escreve no arquivo de saída
+                            
                             Aluno aluno;
                             strcpy(aluno.nome, nome);
                             strcpy(aluno.cpf, cpf);
@@ -58,9 +58,7 @@ void gerar_alunos(const char *arquivo_saida) {
 
                             fwrite(&aluno, sizeof(Aluno), 1, out);
 
-                            // Insere também na heap
-                            //insere_heap(h, nome, cpf, nota);
-
+                            
                             total++;
                         }
                     }
