@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define TAMANHO_TABELA 20011
+#define TAMANHO_TABELA 100019
 
 typedef struct hash {
 	FILE *arq;
@@ -37,7 +37,15 @@ int main(){
 	int condition = 1 ; 
 	while(condition){
 		
-		printf("Digitar operacao: 1 - inserir , 2 - buscar , 3 - remover  , 4 - imprimir , sair - 0: ") ; 
+		printf("\n====== MENU HASH ======\n");
+		printf("  1 - Inserir registro\n");
+		printf("  2 - Buscar registro\n");
+		printf("  3 - Remover registro\n");
+		printf("  4 - Imprimir tabela\n");
+		printf("  0 - Sair\n");
+		printf("========================\n");
+		printf("Escolha uma opcao: ");
+ 		
 		scanf("%d" , &condition) ; 
 		
 		switch (condition) {
@@ -89,6 +97,12 @@ int main(){
 				break;
 			}
 			
+			case 0 : {
+				
+				break;
+			}
+			
+			
 			default:
 		        printf("Opção inválida.\n");
 				
@@ -110,6 +124,9 @@ int hash(char *cpf, int k  ) {
 }
 
 
+
+
+
 int hash_rand(char *cpf) {
     char cpf_seed_str[10]; 
     strncpy(cpf_seed_str, cpf, 9);
@@ -117,9 +134,12 @@ int hash_rand(char *cpf) {
 
     int seed = atoi(cpf_seed_str); 
     srand(seed);
-
-    return rand() % TAMANHO_TABELA ;
+	
+	
+    return ( (rand()*3) + 10000) % TAMANHO_TABELA ;
 }
+
+
 
 
 Aluno *buscar_hash(Hash *h, char *cpf) {
@@ -128,25 +148,25 @@ Aluno *buscar_hash(Hash *h, char *cpf) {
     Aluno *aluno;
 
     while (k < TAMANHO_TABELA) {
-        pos = hash(cpf, k);  // posição tentativa
+        pos = hash(cpf, k);  
         aluno = ler_arquivo(h, pos);
 
         if (aluno->ocupado == 0) {
-            // Nunca houve registro aqui: CPF não está na tabela
+            
             free(aluno);
             return NULL;
         }
 
         if (aluno->ocupado == 1 && strncmp(aluno->cpf, cpf, 11) == 0) {
-            // Encontrou o aluno com CPF correspondente
+            
             return aluno;
         }
 
-        free(aluno);  // não é o que buscamos
-        k++;  // próxima tentativa
+        free(aluno);  
+        k++;  
     }
 
-    // Tabela cheia e CPF não encontrado
+    
     return NULL;
 }
 
@@ -160,13 +180,13 @@ void inserir_hash(Hash *h, char *cpf , char*nome , double nota ) {
         Aluno *a = ler_arquivo(h, pos);
 
         if (a->ocupado == 1 && strncmp(a->cpf, cpf, 11) == 0) {
-            //printf("CPF já existente. Inserção cancelada.\n");
+            
             free(a);
             return;
         }
 
         if (a->ocupado == 0 || a->ocupado == 2) {
-            // Inserir aqui diretamente
+            
             Aluno novo;
             strncpy(novo.nome, nome, 50);
             strncpy(novo.cpf, cpf, 12);
@@ -175,7 +195,7 @@ void inserir_hash(Hash *h, char *cpf , char*nome , double nota ) {
 
             escrever_arquivo(h, pos, &novo);
             
-            //printf("Aluno inserido na posicao %d\n", pos);
+            
             free(a);
             return;
         }
@@ -198,7 +218,6 @@ int remover_hash(Hash *h, char *cpf) {
         Aluno *a = ler_arquivo(h, pos);
 
         if (a->ocupado == 0) {
-            // Posição nunca ocupada -> CPF não está na tabela
             free(a);
             return 0; // Falha ao remover
         }
